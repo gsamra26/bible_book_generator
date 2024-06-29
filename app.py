@@ -5,7 +5,10 @@ import dash_mantine_components as dmc
 
 import requests
 import json
+import os
 
+api_key = os.getenv('api_key')
+url = os.getenv('url')
 
 
 
