@@ -36,6 +36,7 @@ bible_gateway_list = ['Genesis', 'Exodus', 'Leviticus', 'Numbers', 'Deuteronomy'
 
 app = Dash(__name__)
 server = app.server
+app.title = 'Bible Generator' 
 
 app.layout = dmc.MantineProvider(
     dmc.Container(
