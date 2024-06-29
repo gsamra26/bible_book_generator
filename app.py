@@ -7,8 +7,7 @@ import requests
 import json
 
 
-api_key = 'bb72b42e-760c-4535-a20e-c719a19c75f5'
-url = 'https://api.random.org/json-rpc/4/invoke'
+
 
 headers = {
     'Content-Type': 'application/json'
