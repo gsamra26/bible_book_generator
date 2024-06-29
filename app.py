@@ -7,9 +7,12 @@ import requests
 import json
 import os
 
-api_key = os.getenv('api_key')
-url = os.getenv('url')
+#api_key = os.getenv('api_key')
+#url = os.getenv('url')
 
+
+api_key = 'bb72b42e-760c-4535-a20e-c719a19c75f5'
+url = 'https://api.random.org/json-rpc/4/invoke'
 
 
 headers = {
