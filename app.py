@@ -29,7 +29,7 @@ bible_gateway_list = ['Genesis', 'Exodus', 'Leviticus', 'Numbers', 'Deuteronomy'
 
 
 app = Dash(__name__)
-
+server = app.server
 
 app.layout = dmc.MantineProvider(
     dmc.Container(
