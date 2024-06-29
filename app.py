@@ -26,8 +26,8 @@ book_list = ['Genesis', 'Exodus', 'Leviticus', 'Numbers', 'Deuteronomy', 'Joshua
 bible_gateway_list = ['Genesis', 'Exodus', 'Leviticus', 'Numbers', 'Deuteronomy', 'Joshua', 'Judges', 'Ruth', '1%20Samuel', '2%20Samuel', '1%20Kings', '2%20Kings', '1%20Chronicles', '2%20Chronicles', 'Ezra', 'Nehemiah', 'Esther', 'Job', 'Psalms',
                       'Proverbs', 'Ecclesiastes', 'Song of Solomon', 'Isaiah', 'Jeremiah', 'Lamentations', 'Ezekiel', 'Daniel', 'Hosea', 'Joel', 'Amos', 'Obadiah', 'Jonah', 'Micah', 'Nahum', 'Habakkuk', 'Zephaniah', 'Haggai', 'Zechariah', 'Malachi',
                       'Matthew', 'Mark', 'Luke', 'John', 'Acts', 'Romans', '1%20Corinthians', '2%20Corinthians', 'Galatians', 'Ephesians', 'Philippians', 'Colossians', '1%20Thessalonians', '2%20Thessalonians',
-                      '1%20Timothy', '2%20Timothy', 'Titus', 'Philemon', 'Hebrews', 'James', '1%20Peter', '2%20Peter', '1%20John', '2%20John', '3%20John', 'Jude', 'Revelation'
-                      ]
+                      '1%20Timothy', '2%20Timothy', 'Titus', 'Philemon', 'Hebrews', 'James', '1%20Peter', '2%20Peter', '1%20John', '2%20John', '3%20John', 'Jude', 'Revelation']
+
 
 app = Dash(__name__)
 
@@ -102,6 +102,11 @@ def get_chapter(clicks, translation):
 
         book = int(book_result['result']['random']['data'][0])
 
+        if book_chapter_list[book] == 1:
+            bible_gateway_link = 'https://www.biblegateway.com/passage/?search=' + \
+                bible_gateway_list[book] + '%20' + ' &version=' + translation
+            return str(book_list[book]) + ' 1', bible_gateway_link
+
         chapter_params = {
             'jsonrpc': '2.0',
             'method': 'generateIntegers',
@@ -113,7 +118,7 @@ def get_chapter(clicks, translation):
                 'max': book_chapter_list[book],
                 'replacement': True
             },
-            'id': 1
+            'id': 2
         }
 
         # Make the request
@@ -125,7 +130,10 @@ def get_chapter(clicks, translation):
             # Parse the JSON response
             chapter_result = response.json()
 
-        chapter = chapter_result['result']['random']['data']
+        try:
+            chapter = chapter_result['result']['random']['data']
+        except:
+            print(chapter)
 
         bible_gateway_link = 'https://www.biblegateway.com/passage/?search=' + \
             bible_gateway_list[book] + '%20' + \
