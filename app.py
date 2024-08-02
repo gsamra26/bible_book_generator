@@ -1,11 +1,10 @@
 import dash
-from dash import Dash, Input, Output, callback, html, State, ctx
-import flask
+from dash import Dash, Input, Output, callback, html, State, ctx, _dash_renderer
 import dash_mantine_components as dmc
 
 import requests
 import json
-import os
+
 
 # api_key = os.getenv('api_key')
 # url = os.getenv('url')
@@ -61,6 +60,9 @@ def get_random_thing(min, max):
     return result
 
 
+_dash_renderer._set_react_version("18.2.0")
+
+
 app = Dash(__name__)
 server = app.server
 app.title = 'Bible Generator'
@@ -69,11 +71,11 @@ app.layout = dmc.MantineProvider(
     dmc.Container(
         dmc.Grid(
             children=[
-                dmc.Col(
+                dmc.GridCol(
                     html.H1('Book Generator'),
                     span=12
                 ),
-                dmc.Col(
+                dmc.GridCol(
                     children=[
                         dmc.Button(
                             'Generate me a chapter to read',
@@ -97,7 +99,7 @@ app.layout = dmc.MantineProvider(
                     ],
                     span=12
                 ),
-                dmc.Col(
+                dmc.GridCol(
                     dmc.Text(id='psalm')
                 )
             ]
