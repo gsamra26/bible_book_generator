@@ -1,17 +1,15 @@
 import dash
 from dash import Dash, Input, Output, callback, html, State, ctx, _dash_renderer
 import dash_mantine_components as dmc
-import os
 import requests
 import json
 
 
-api_key = os.getenv('api_key')
-url = os.getenv('url')
 
 
-#api_key = 'bb72b42e-760c-4535-a20e-c719a19c75f5'
-#url = 'https://api.random.org/json-rpc/4/invoke'
+
+api_key = 'bb72b42e-760c-4535-a20e-c719a19c75f5'
+url = 'https://api.random.org/json-rpc/4/invoke'
 
 
 headers = {
