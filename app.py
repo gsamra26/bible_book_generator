@@ -8,7 +8,7 @@ import json
 api_key = 'bb72b42e-760c-4535-a20e-c719a19c75f5'
 url = 'https://api.random.org/json-rpc/4/invoke'
 
-local_hist = []
+# local_hist = []
 
 link_pt1 = 'https://www.biblegateway.com/passage/?search='
 version_link = ' &version='
@@ -99,11 +99,11 @@ app.layout = dmc.MantineProvider(
                 ),
                 dmc.GridCol(
                     dmc.Text(id='psalm')
-                ),
-                dmc.GridCol(
-                    dmc.Text(id='hist')
-
                 )
+                # dmc.GridCol(
+                #    dmc.Text(id='hist')
+
+                # )
             ]
         )
     )
@@ -113,7 +113,7 @@ app.layout = dmc.MantineProvider(
 @app.callback(
     Output('text_output', 'children'),
     Output('bible_link', 'href'),
-    Output('hist', 'children'),
+    # Output('hist', 'children'),
     Input('random_call_button', 'n_clicks'),
     Input('psalms_button', 'n_clicks'),
     State('translation', 'value'),
@@ -156,11 +156,12 @@ def get_chapter(book_click, psalm_click, translation):
             bible_gateway_list[book] + '%20' + \
             str(chapter) + version_link + translation
 
-        local_hist.append(str(book_list[book]) + ' ' + str(chapter))
+        # local_hist.append(str(book_list[book]) + ' ' + str(chapter))
         if church_chap == True:
             return str(book_list[book]) + ' ' + str(chapter) + ' - ' + church, bible_gateway_link, ', '.join(local_hist)
         else:
-            return str(book_list[book]) + ' ' + str(chapter), bible_gateway_link, ', '.join(local_hist)
+            # , ', '.join(local_hist)
+            return str(book_list[book]) + ' ' + str(chapter), bible_gateway_link
 
     elif button_clicked == 'psalms_button':
         chapter_result = get_random_thing(1, 150)
@@ -168,7 +169,8 @@ def get_chapter(book_click, psalm_click, translation):
         bible_gateway_link = link_pt1 + \
             'Psalm' + '%20' + \
             str(chapter) + version_link + translation
-        return 'Psalm ' + str(chapter), bible_gateway_link, ', '.join(local_hist)
+        # , ', '.join(local_hist)
+        return 'Psalm ' + str(chapter), bible_gateway_link
 
 
 if __name__ == '__main__':
