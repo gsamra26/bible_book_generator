@@ -5,13 +5,13 @@ import requests
 import json
 
 
-
-
-
 api_key = 'bb72b42e-760c-4535-a20e-c719a19c75f5'
 url = 'https://api.random.org/json-rpc/4/invoke'
 
+local_hist = []
 
+link_pt1 = 'https://www.biblegateway.com/passage/?search='
+version_link = ' &version='
 headers = {
     'Content-Type': 'application/json'
 }
@@ -20,7 +20,7 @@ headers = {
 book_chapter_list = [50, 40, 27, 36, 34, 24, 21, 4, 31, 24, 22, 25, 29, 36, 10, 13, 10, 42, 150, 31, 12, 8, 66,
                      52, 5, 48, 12, 14, 3, 9, 1, 4, 7, 3, 3, 3, 2, 14, 4, 28, 16, 24, 21, 28, 16, 16, 13, 6, 6, 4, 4, 5, 3, 6, 4, 3, 1, 13, 5, 5, 3, 5, 1, 1, 1, 22]
 
-book_list = ['Genesis', 'Exodus', 'Leviticus', 'Numbers', 'Deuteronomy', 'Joshua', 'Judges', 'Ruth', '1st Samuel', '2nd Samuel', '1st Kings', '2nd Kings', '1st Chronicles', '2nd Chronicles', 'Ezra', 'Nehemiah', 'Esther', 'Job', 'Psalms',
+book_list = ['Genesis', 'Exodus', 'Leviticus', 'Numbers', 'Deuteronomy', 'Joshua', 'Judges', 'Ruth', '1st Samuel', '2nd Samuel', '1st Kings', '2nd Kings', '1st Chronicles', '2nd Chronicles', 'Ezra', 'Nehemiah', 'Esther', 'Job', 'Psalm',
              'Proverbs', 'Ecclesiastes', 'Song of Solomon', 'Isaiah', 'Jeremiah', 'Lamentations', 'Ezekiel', 'Daniel', 'Hosea', 'Joel', 'Amos', 'Obadiah', 'Jonah', 'Micah', 'Nahum', 'Habakkuk', 'Zephaniah', 'Haggai', 'Zechariah', 'Malachi',
              'Matthew', 'Mark', 'Luke', 'John', 'Acts', 'Romans', '1st Corinthians', '2nd Corinthians', 'Galatians', 'Ephesians', 'Philippians', 'Colossians', '1st Thessalonians', '2nd Thessalonians',
              '1st Timothy', '2nd Timothy', 'Titus', 'Philemon', 'Hebrews', 'James', '1st Peter', '2nd Peter', '1st John', '2nd John', '3rd John', 'Jude', 'Revelation'
@@ -92,13 +92,17 @@ app.layout = dmc.MantineProvider(
                         dmc.Anchor(dmc.Button("Our Daily Bread"),
                                    href="https://odb.org/", id='odb', target='_blank'),
                         dmc.Anchor(dmc.Button("Random.org"),
-                                   href="random.org", target='_blank'),
+                                   href="https://random.org", target='_blank'),
                         dmc.Button('Psalms', id='psalms_button')
                     ],
                     span=12
                 ),
                 dmc.GridCol(
                     dmc.Text(id='psalm')
+                ),
+                dmc.GridCol(
+                    dmc.Text(id='hist')
+
                 )
             ]
         )
@@ -109,6 +113,7 @@ app.layout = dmc.MantineProvider(
 @app.callback(
     Output('text_output', 'children'),
     Output('bible_link', 'href'),
+    Output('hist', 'children'),
     Input('random_call_button', 'n_clicks'),
     Input('psalms_button', 'n_clicks'),
     State('translation', 'value'),
@@ -116,60 +121,15 @@ app.layout = dmc.MantineProvider(
 )
 def get_chapter(book_click, psalm_click, translation):
     button_clicked = ctx.triggered_id
-    # Define the parameters for the request
-    # book_params = {
-    #     'jsonrpc': '2.0',
-    #     'method': 'generateIntegers',
-    #     'params': {
-    #         'apiKey': api_key,
-    #         'n': 1,          # Number of random integers to generate
-    #         'min': 64,        # Minimum value of the random integers
-    #         'max': 65,      # Maximum value of the random integers
-    #         'replacement': True
-    #     },
-    #     'id': 1
-    # }
-
-    # # Make the request
-    # book_response = requests.post(url, headers=headers,
-    #                          data=json.dumps(book_params))
-
-    # # Check if the request was successful
-    # if book_response.status_code == 200:
-    #     # Parse the JSON response
-    #     book_result = book_response.json()
     if button_clicked == 'random_call_button':
         book_result = get_random_thing(0, 65)
         book = int(book_result['result']['random']['data'][0])
 
         if book_chapter_list[book] == 1:
-            bible_gateway_link = 'https://www.biblegateway.com/passage/?search=' + \
+            bible_gateway_link = link_pt1 + \
                 bible_gateway_list[book] + '%20' + \
-                ' &version=' + translation
+                version_link + translation
             return str(book_list[book]) + ' 1', bible_gateway_link
-
-        # chapter_params = {
-        #     'jsonrpc': '2.0',
-        #     'method': 'generateIntegers',
-        #     'params': {
-        #         'apiKey': api_key,
-        #         'n': 1,          # Number of random integers to generate
-        #         'min': 1,        # Minimum value of the random integers
-        #         # Maximum value of the random integers
-        #         'max': book_chapter_list[book],
-        #         'replacement': True
-        #     },
-        #     'id': 2
-        # }
-
-        # # Make the request
-        # response = requests.post(url, headers=headers,
-        #                          data=json.dumps(chapter_params))
-
-        # # Check if the request was successful
-        # if response.status_code == 200:
-        #     # Parse the JSON response
-        #     chapter_result = response.json()
 
         chapter_result = get_random_thing(1, book_chapter_list[book])
 
@@ -192,21 +152,23 @@ def get_chapter(book_click, psalm_click, translation):
                     church_result['result']['random']['data'][0])
                 church = str(revelation_3_churches[church_num])
 
-        bible_gateway_link = 'https://www.biblegateway.com/passage/?search=' + \
+        bible_gateway_link = link_pt1 + \
             bible_gateway_list[book] + '%20' + \
-            str(chapter) + ' &version=' + translation
+            str(chapter) + version_link + translation
+
+        local_hist.append(str(book_list[book]) + ' ' + str(chapter))
         if church_chap == True:
-            return str(book_list[book]) + ' ' + str(chapter) + ' - ' + church, bible_gateway_link
+            return str(book_list[book]) + ' ' + str(chapter) + ' - ' + church, bible_gateway_link, ', '.join(local_hist)
         else:
-            return str(book_list[book]) + ' ' + str(chapter), bible_gateway_link
+            return str(book_list[book]) + ' ' + str(chapter), bible_gateway_link, ', '.join(local_hist)
 
     elif button_clicked == 'psalms_button':
         chapter_result = get_random_thing(1, 150)
         chapter = int(chapter_result['result']['random']['data'][0])
-        bible_gateway_link = 'https://www.biblegateway.com/passage/?search=' + \
+        bible_gateway_link = link_pt1 + \
             'Psalm' + '%20' + \
-            str(chapter) + ' &version=' + translation
-        return 'Psalm ' + str(chapter), bible_gateway_link
+            str(chapter) + version_link + translation
+        return 'Psalm ' + str(chapter), bible_gateway_link, ', '.join(local_hist)
 
 
 if __name__ == '__main__':
